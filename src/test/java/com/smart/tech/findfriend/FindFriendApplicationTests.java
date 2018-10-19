@@ -1,5 +1,6 @@
 package com.smart.tech.findfriend;
 
+import com.smart.tech.findfriend.domain.po.Coordinate;
 import com.smart.tech.findfriend.domain.po.UserLocation;
 import com.smart.tech.findfriend.service.LocationService;
 import org.junit.Test;
@@ -29,8 +30,8 @@ public class FindFriendApplicationTests {
 
     @Test
     public void nearByTest(){
-        UserLocation userLocation = new UserLocation(12.0, 40.0, null, null);
-        locationService.getNearbyUserByRadius(userLocation, 100L);
+        Coordinate coordinate = new Coordinate(11.0, 78.0);
+        locationService.getNearbyUserByRadius(coordinate, 100L);
     }
 
     @Test

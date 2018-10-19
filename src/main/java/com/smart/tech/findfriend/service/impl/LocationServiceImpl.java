@@ -32,6 +32,9 @@ public class LocationServiceImpl implements LocationService {
 
 
     @Override
+    /**
+     * 保存用户位置信息
+     */
     public Long saveUserLocation(UserLocation userLocation) {
         log.info("saveUserLocation input:{}", JSON.toJSONString(userLocation));
 
@@ -44,6 +47,9 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    /**
+     * 随机生成经纬度作为圆心，100m半径内的所有用户，取第一条
+     */
     public UserLocation getRandomUser() {
         log.info("getRandomUser input:{},{}");
 
@@ -79,12 +85,15 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<UserLocation> getNearbyUserByRadius(UserLocation userLocation, Long distance) {
-        log.info("getNearbyUserByRadius input:{},{}", JSON.toJSONString(userLocation), distance);
+    /**
+     * 以当前用户坐标为圆心，distance为半径内的所有用户
+     */
+    public List<UserLocation> getNearbyUserByRadius(Coordinate coordinate, Long distance) {
+        log.info("getNearbyUserByRadius input:{},{}", JSON.toJSONString(coordinate), distance);
 
         String key = String.format(USER_LOCATION_KEY, "001");
         //圆点
-        Point center = new Point(userLocation.getCoordinate().getLongitude(), userLocation.getCoordinate().getLatitude());
+        Point center = new Point(coordinate.getLongitude(), coordinate.getLatitude());
         //半径
         Distance radius = new Distance(distance, Metrics.MILES);
         //圆

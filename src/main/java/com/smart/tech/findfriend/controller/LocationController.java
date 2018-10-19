@@ -24,12 +24,11 @@ public class LocationController {
     @RequestMapping(value = "/nearby.json", method = RequestMethod.POST)
     public Result<List<UserLocation>> nearBy(@Valid Coordinate coordinate, Long distance) {
         log.info("nearBy input:{},{}", JSON.toJSONString(coordinate), distance);
-        UserLocation userLocation = new UserLocation(coordinate.getLongitude(), coordinate.getLatitude(), null, null);
         //距离为空或者为0时，默认距离500m
         if (distance == null || distance.equals(0)) {
             distance = 100L;
         }
-        List<UserLocation> userLocations = locationService.getNearbyUserByRadius(userLocation, distance);
-        return new Result(true, "查询成功", userLocation);
+        List<UserLocation> userLocations = locationService.getNearbyUserByRadius(coordinate, distance);
+        return new Result(true, "查询成功", userLocations);
     }
 }
