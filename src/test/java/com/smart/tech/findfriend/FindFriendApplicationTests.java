@@ -30,7 +30,12 @@ public class FindFriendApplicationTests {
     @Test
     public void nearByTest(){
         UserLocation userLocation = new UserLocation(12.0, 40.0, null, null);
-        locationService.getNearbyUserByRadius(userLocation, 500L);
+        locationService.getNearbyUserByRadius(userLocation, 100L);
+    }
+
+    @Test
+    public void randomUserTest(){
+        locationService.getRandomUser();
     }
 
     private double randomDouble(double min, double max) {
