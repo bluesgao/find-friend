@@ -39,18 +39,22 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<UserLocation> getNearbyUserByRadius(UserLocation userLocation, Long radius) {
-        log.info("getNearbyUserByRadius input:{},{}", JSON.toJSONString(userLocation), radius);
+    public List<UserLocation> getNearbyUserByRadius(UserLocation userLocation, Long distance) {
+        log.info("getNearbyUserByRadius input:{},{}", JSON.toJSONString(userLocation), distance);
 
         String key = String.format(USER_LOCATION_KEY, "001");
+        //圆点
         Point center = new Point(userLocation.getCoordinate().getLongitude(), userLocation.getCoordinate().getLatitude());
-        Distance distance = new Distance(radius, Metrics.MILES);
-        Circle circle = new Circle(center, distance);
+        //半径
+        Distance radius = new Distance(distance, Metrics.MILES);
+        //圆
+        Circle circle = new Circle(center, radius);
+        //命令附加参数
         RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeCoordinates().includeDistance();
 
-        GeoResults<RedisGeoCommands.GeoLocation<String>> getResult = redisTemplate.opsForGeo().radius(key, circle, args);
+        GeoResults<RedisGeoCommands.GeoLocation<String>> geoResult = redisTemplate.opsForGeo().radius(key, circle, args);
 
-        log.info("getNearbyUserByRadius output:{}", JSON.toJSONString(getResult));
+        log.info("getNearbyUserByRadius output:{}", JSON.toJSONString(geoResult));
         return null;
     }
 }

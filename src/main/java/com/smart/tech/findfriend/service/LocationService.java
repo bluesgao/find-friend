@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface LocationService {
     Long saveUserLocation(UserLocation userLocation);
-    List<UserLocation> getNearbyUserByRadius(UserLocation userLocation, Long radius);
+    List<UserLocation> getNearbyUserByRadius(UserLocation userLocation, Long distance);
 }
