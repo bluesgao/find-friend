@@ -1,4 +1,4 @@
-package com.smart.tech.findfriend.domain;
+package com.smart.tech.findfriend.domain.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
