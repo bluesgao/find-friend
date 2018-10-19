@@ -6,9 +6,7 @@ import com.smart.tech.findfriend.service.LocationService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Circle;
-import org.springframework.data.geo.GeoResults;
-import org.springframework.data.geo.Point;
+import org.springframework.data.geo.*;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -31,9 +29,11 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Long saveUserLocation(UserLocation userLocation) {
         log.info("saveUserLocation input:{}", JSON.toJSONString(userLocation));
+
         String key = String.format(USER_LOCATION_KEY, "001");
-        Long ret = redisTemplate.opsForGeo()
-                .add(key, new Point(userLocation.getCoordinate().getLongitude(), userLocation.getCoordinate().getLatitude()), JSON.toJSONString(userLocation.getUser()));
+        Point point = new Point(userLocation.getCoordinate().getLongitude(), userLocation.getCoordinate().getLatitude());
+        Long ret = redisTemplate.opsForGeo().add(key, point, JSON.toJSONString(userLocation.getUser()));
+
         log.info("saveUserLocation output:{}", ret);
         return ret;
     }
@@ -41,8 +41,15 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<UserLocation> getNearbyUserByRadius(UserLocation userLocation, Long radius) {
         log.info("getNearbyUserByRadius input:{},{}", JSON.toJSONString(userLocation), radius);
+
         String key = String.format(USER_LOCATION_KEY, "001");
-        GeoResults<RedisGeoCommands.GeoLocation<String>> getResult = redisTemplate.opsForGeo().radius(key, new Circle(userLocation.getCoordinate().getLongitude(), userLocation.getCoordinate().getLatitude(), radius));
+        Point center = new Point(userLocation.getCoordinate().getLongitude(), userLocation.getCoordinate().getLatitude());
+        Distance distance = new Distance(radius, Metrics.MILES);
+        Circle circle = new Circle(center, distance);
+        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeCoordinates().includeDistance();
+
+        GeoResults<RedisGeoCommands.GeoLocation<String>> getResult = redisTemplate.opsForGeo().radius(key, circle, args);
+
         log.info("getNearbyUserByRadius output:{}", JSON.toJSONString(getResult));
         return null;
     }
